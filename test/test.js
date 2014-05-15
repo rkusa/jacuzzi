@@ -87,6 +87,8 @@ suite('Pool', function() {
       }
     })
 
+    pool.opts.min = 1
+
     setImmediate(function() {
       expect(pool.resources).to.have.lengthOf(2)
       expect(pool.resourcesCount).to.equal(2)
@@ -100,6 +102,37 @@ suite('Pool', function() {
         expect(pool.resourcesCount).to.equal(1)
         done()
       }, 100)
+    })
+  })
+
+  test('destroy reject', function(done) {
+    var resource = {}
+    var pool = new Pool({
+      create: function() {
+        return resource
+      },
+      destroy: function() {
+        return new Promise(function(resolve, reject) {
+          reject()
+        })
+      }
+    })
+
+    pool.opts.min = 1
+
+    setImmediate(function() {
+      expect(pool.resources).to.have.lengthOf(2)
+      expect(pool.resourcesCount).to.equal(2)
+
+      pool.destroyResource(resource)
+      expect(pool.resources).to.have.lengthOf(1)
+      expect(pool.resourcesCount).to.equal(2)
+
+      setImmediate(function() {
+        expect(pool.resources).to.have.lengthOf(1)
+        expect(pool.resourcesCount).to.equal(1)
+        done()
+      })
     })
   })
 
@@ -124,6 +157,34 @@ suite('Pool', function() {
         done()
       })
       pool.destroyResource(resource)
+    })
+  })
+
+  test('create after destroy if #resources < opts.min', function(done) {
+    var resource = {}
+    var pool = new Pool({
+      create: function() {
+        return resource
+      },
+      destroy: function() {
+        return new Promise(function(resolve, reject) {
+          reject()
+        })
+      }
+    })
+
+    setImmediate(function() {
+      pool.destroyResource(resource)
+      expect(pool.resources).to.have.lengthOf(1)
+      expect(pool.resourcesCount).to.equal(2)
+
+      pool.on('create', function oncreate() {
+        pool.removeListener('create', oncreate)
+
+        expect(pool.resources).to.have.lengthOf(2)
+        expect(pool.resourcesCount).to.equal(2)
+        done()
+      })
     })
   })
 
