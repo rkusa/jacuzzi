@@ -1,0 +1,31 @@
+{
+  "name": "jacuzzi",
+  "version": "0.0.0",
+  "author": "Markus Ast <npm.m@rkusa.st>",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/rkusa/jacuzzi",
+  "bugs": "https://github.com/rkusa/jacuzzi/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rkusa/jacuzzi.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.11"
+  },
+  "main": "./lib",
+  "scripts": {
+    "test": "gulp"
+  },
+  "dependencies": {
+    "debug": "^0.8.1"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "gulp": "^3.6.2",
+    "gulp-jshint": "^1.5.5",
+    "gulp-mocha": "^0.4.1",
+    "jshint-stylish": "^0.2.0"
+  }
+}
