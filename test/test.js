@@ -228,12 +228,13 @@ suite('Pool', function() {
   })
 
   test('acquire with failing check', function(done) {
+    var checked = 0
     var pool = new Pool({
       create: function() {
         return new Resource
       },
       check: function(resource) {
-        return false
+        return ++checked > 1
       }
     })
 
@@ -275,7 +276,7 @@ suite('Pool', function() {
     })
   })
 
-  test('acquire - wait @current', function(done) {
+  test('acquire - wait', function(done) {
     var pool = new Pool({
       create: function() {
         return new Resource
@@ -297,6 +298,106 @@ suite('Pool', function() {
 
         expect(pool.queue).to.have.lengthOf(1)
         done()
+      })
+    })
+  })
+
+  test('release - add back', function(done) {
+    var pool = new Pool({
+      create: function() {
+        return new Resource
+      },
+      min: 1,
+      max: 1
+    })
+
+    setTimeout(function() {
+      expect(pool.pool.length).to.equal(1)
+      expect(pool.size).to.equal(1)
+
+      pool.acquire(function(err, resource) {
+        expect(resource).to.be.an.instanceOf(Resource)
+        expect(pool.pool.length).to.equal(0)
+        expect(pool.size).to.equal(1)
+
+        pool.release(resource)
+
+        setTimeout(function() {
+          expect(pool.pool.length).to.equal(1)
+          expect(pool.size).to.equal(1)
+
+          done()
+        })
+      })
+    })
+  })
+
+  test('release - forward', function(done) {
+    var pool = new Pool({
+      create: function() {
+        return new Resource
+      },
+      min: 1,
+      max: 1
+    })
+
+    setTimeout(function() {
+      expect(pool.pool.length).to.equal(1)
+      expect(pool.size).to.equal(1)
+
+      pool.acquire(function(err, resource) {
+        expect(resource).to.be.an.instanceOf(Resource)
+        expect(pool.pool.length).to.equal(0)
+        expect(pool.size).to.equal(1)
+
+        pool.acquire(function(err, res) {
+          expect(resource).to.equal(res)
+          expect(pool.pool.length).to.equal(0)
+          expect(pool.size).to.equal(1)
+          done()
+        })
+
+        expect(pool.queue).to.have.lengthOf(1)
+        pool.release(resource)
+      })
+    })
+  })
+
+  test('release - check @current', function(done) {
+    var checked = 0
+    var pool = new Pool({
+      create: function() {
+        return new Resource
+      },
+      check: function() {
+        return ++checked === 1
+      },
+      min: 1,
+      max: 1
+    })
+
+    setTimeout(function() {
+      expect(pool.pool.length).to.equal(1)
+      expect(pool.size).to.equal(1)
+
+      pool.acquire(function(err, resource) {
+        expect(resource).to.be.an.instanceOf(Resource)
+        expect(pool.pool.length).to.equal(0)
+        expect(pool.size).to.equal(1)
+
+        var spy = chai.spy()
+        pool.on('destroy', spy)
+
+        pool.opts.min = 0
+        pool.release(resource)
+
+        setTimeout(function() {
+          expect(spy).to.have.been.called()
+          expect(pool.pool.length).to.equal(0)
+          expect(pool.size).to.equal(0)
+
+          done()
+        })
       })
     })
   })
