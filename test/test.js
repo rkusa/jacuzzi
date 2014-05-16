@@ -30,7 +30,7 @@ suite('Pool', function() {
     var spy = chai.spy()
     pool.on('create', spy)
     setTimeout(function() {
-      expect(spy).to.have.been.called.twice
+      expect(spy).to.have.been.called.twice()
       expect(pool.pool.length).to.equal(2)
       expect(pool.size).to.equal(2)
       pool.pool.forEach(function(resource) {
@@ -153,9 +153,9 @@ suite('Pool', function() {
       expect(pool.pool.length).to.equal(2)
       expect(pool.size).to.equal(2)
 
-      pool.on('error', function onerror(err) {
+      pool.on('fail', function onerror(err) {
         expect(err).to.be.an.instanceof(TimeoutError)
-        pool.removeListener('error', onerror)
+        pool.removeListener('fail', onerror)
         done()
       })
       pool.destroyResource(pool.pool[0])
@@ -195,7 +195,7 @@ suite('Pool', function() {
       create: function() {
         return new Resource
       },
-      check: function(resource) {
+      check: function() {
         checked++
         return true
       }
@@ -233,7 +233,7 @@ suite('Pool', function() {
       create: function() {
         return new Resource
       },
-      check: function(resource) {
+      check: function() {
         return ++checked > 1
       }
     })
@@ -294,7 +294,7 @@ suite('Pool', function() {
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)
 
-        pool.acquire(function(err, resource) {})
+        pool.acquire(function() {})
 
         expect(pool.queue).to.have.lengthOf(1)
         done()
