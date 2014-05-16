@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "chai": "^1.9.1",
+    "chai-spies": "^0.5.1",
     "gulp": "^3.6.2",
     "gulp-jshint": "^1.5.5",
     "gulp-mocha": "^0.4.1",
