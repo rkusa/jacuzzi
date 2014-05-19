@@ -36,9 +36,8 @@
     "chai": "^1.9.1",
     "chai-spies": "^0.5.1",
     "gulp": "^3.6.2",
-    "gulp-jshint": "^1.5.5",
+    "gulp-eslint": "^0.1.6",
     "gulp-mocha": "^0.4.1",
-    "jshint-stylish": "^0.2.0",
-    "rkusa/matcha": "^0.5.0"
+    "matcha": "rkusa/matcha"
   }
 }

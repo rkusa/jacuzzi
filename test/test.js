@@ -1,4 +1,6 @@
-/*global suite, test, suiteSetup */
+/*eslint-env node, mocha */
+
+'use strict'
 
 var chai = require('chai')
 chai.use(require('chai-spies'))
@@ -22,7 +24,7 @@ suite('Pool', function() {
     var pool = new Pool({
       create: function() {
         return new Resource
-      },
+      }
     })
 
     expect(pool.size).to.equal(2)
@@ -213,7 +215,7 @@ suite('Pool', function() {
         expect(pool.size).to.equal(2)
         expect(checked).to.equal(1)
 
-        pool.acquire(function(err, resource) {
+        pool.acquire(function(resource) {
           expect(resource).to.be.an.instanceOf(Resource)
           expect(pool.pool.length).to.equal(0)
           expect(pool.size).to.equal(2)
@@ -244,7 +246,7 @@ suite('Pool', function() {
 
       pool.opts.min = 0
 
-      pool.acquire(function(err, resource) {
+      pool.acquire(function(resource) {
         expect(resource).to.be.an.instanceOf(Resource)
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)
@@ -266,7 +268,7 @@ suite('Pool', function() {
       expect(pool.pool.length).to.equal(0)
       expect(pool.size).to.equal(0)
 
-      pool.acquire(function(err, resource) {
+      pool.acquire(function(resource) {
         expect(resource).to.be.an.instanceOf(Resource)
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)
@@ -289,7 +291,7 @@ suite('Pool', function() {
       expect(pool.pool.length).to.equal(1)
       expect(pool.size).to.equal(1)
 
-      pool.acquire(function(err, resource) {
+      pool.acquire(function(resource) {
         expect(resource).to.be.an.instanceOf(Resource)
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)
@@ -315,7 +317,7 @@ suite('Pool', function() {
       expect(pool.pool.length).to.equal(1)
       expect(pool.size).to.equal(1)
 
-      pool.acquire(function(err, resource) {
+      pool.acquire(function(resource) {
         expect(resource).to.be.an.instanceOf(Resource)
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)
@@ -345,12 +347,12 @@ suite('Pool', function() {
       expect(pool.pool.length).to.equal(1)
       expect(pool.size).to.equal(1)
 
-      pool.acquire(function(err, resource) {
+      pool.acquire(function(resource) {
         expect(resource).to.be.an.instanceOf(Resource)
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)
 
-        pool.acquire(function(err, res) {
+        pool.acquire(function(res) {
           expect(resource).to.equal(res)
           expect(pool.pool.length).to.equal(0)
           expect(pool.size).to.equal(1)
@@ -380,7 +382,7 @@ suite('Pool', function() {
       expect(pool.pool.length).to.equal(1)
       expect(pool.size).to.equal(1)
 
-      pool.acquire(function(err, resource) {
+      pool.acquire(function(resource) {
         expect(resource).to.be.an.instanceOf(Resource)
         expect(pool.pool.length).to.equal(0)
         expect(pool.size).to.equal(1)

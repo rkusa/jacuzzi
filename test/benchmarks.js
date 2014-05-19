@@ -1,3 +1,8 @@
+/*global suite, before, bench, after, set*/
+/*eslint max-nested-callbacks: 0*/
+
+'use strict'
+
 var net = require('net')
 var assert = require('assert')
 var Pool = require('../').Pool
@@ -52,7 +57,7 @@ suite('jacuzzi', function () {
   })
 
   bench('jacuzzi connection pool', function(next) {
-    pool.acquire(function(err, socket) {
+    pool.acquire(function(socket) {
       // console.log(arguments)
       socket.on('data', function ondata(data) {
         socket.removeListener('data', ondata)

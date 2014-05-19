@@ -1,5 +1,5 @@
 test
 .DS_Store
+eslint.json
 .travis.yml
-.jshintrc
 .nvmrc
