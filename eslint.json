@@ -14,9 +14,6 @@
     //"space-after-keywords": 2,
     "consistent-this": [2, "self"]
   },
-  "globals": {
-    "Promise": true
-  },
   "env": {
     "node": true
   }

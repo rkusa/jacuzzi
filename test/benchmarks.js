@@ -6,6 +6,7 @@
 var net = require('net')
 var assert = require('assert')
 var Pool = require('../').Pool
+var Promise = GLOBAL.Promise || require('es6-promise').Promise
 var port = process.env.PORT || 4000
 var server, pool
 
