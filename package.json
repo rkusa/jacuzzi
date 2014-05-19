@@ -2,8 +2,8 @@
   "name": "jacuzzi",
   "version": "0.0.0",
   "author": "Markus Ast <npm.m@rkusa.st>",
-  "description": "",
-  "keywords": [],
+  "description": "A generic resource pool and balancer.",
+  "keywords": ["generic", "pool", "pooling", "http", "sockets", "balancer," "load balancer", "connection pool", "resource pool"],
   "homepage": "https://github.com/rkusa/jacuzzi",
   "bugs": "https://github.com/rkusa/jacuzzi/issues",
   "repository": {

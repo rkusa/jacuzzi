@@ -23,3 +23,11 @@ gulp.task('lint', function() {
              .pipe(jshint.reporter('jshint-stylish'))
              .pipe(jshint.reporter('fail'))
 })
+
+// var cat = require('gulp-cat')
+// var dogs = require('dogs')
+// gulp.task('dogs', function() {
+//   return gulp.src(['lib/*'])
+//   .pipe(dogs())
+//   .pipe(cat())
+// })
