@@ -3,7 +3,17 @@
   "version": "0.0.0",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "A generic resource pool and balancer.",
-  "keywords": ["generic", "pool", "pooling", "http", "sockets", "balancer," "load balancer", "connection pool", "resource pool"],
+  "keywords": [
+    "generic",
+    "pool",
+    "pooling",
+    "http",
+    "sockets",
+    "balancer",
+    "load balancer",
+    "connection pool",
+    "resource pool"
+  ],
   "homepage": "https://github.com/rkusa/jacuzzi",
   "bugs": "https://github.com/rkusa/jacuzzi/issues",
   "repository": {
@@ -16,7 +26,8 @@
   },
   "main": "./lib",
   "scripts": {
-    "test": "gulp"
+    "test": "gulp",
+    "benchmark": "matcha test/benchmarks.js"
   },
   "dependencies": {
     "debug": "^0.8.1"
@@ -27,6 +38,7 @@
     "gulp": "^3.6.2",
     "gulp-jshint": "^1.5.5",
     "gulp-mocha": "^0.4.1",
-    "jshint-stylish": "^0.2.0"
+    "jshint-stylish": "^0.2.0",
+    "rkusa/matcha": "^0.5.0"
   }
 }
