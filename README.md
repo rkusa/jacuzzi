@@ -19,11 +19,12 @@
 
   **Options:**
 
+  - **name** (optional) - a name for the pool - useful for debugging purposes
   - **min** (default: 2) - minimum number of active resources in pool at any given time
   - **max** (default: 10) - maximum number of concurrently active resources
   - **create** - a function that creates new resources (could return a new resource directly or a `Promise`)
-  - **destroy** - a function that is used to destroy resources (could return a `Promise` for asynchronous destruction)
-  - **check** - a function that is used to check a resource (should return a `true` if the resource is OK, or otherwise `false`; for asynchronous checks it could also return a `Promise`)
+  - **destroy** (optional) - a function that is used to destroy resources (could return a `Promise` for asynchronous destruction)
+  - **check** (optional) - a function that is used to check a resource (should return a `true` if the resource is OK, or otherwise `false`; for asynchronous checks it could also return a `Promise`)
   - **events** (default: close, end, error, timeout) - a list of events that are listened to on each resource and - if called - lead to the destruction of the resource
   - **creationTimeout** (default: 500ms) - a timeout (in ms) for the creation of a resource
   - **destructionTimeout** (default: 500ms) - a timeout (in ms) for the destruction of a resource
