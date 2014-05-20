@@ -4,34 +4,30 @@
 'use strict'
 
 var net = require('net')
+var path = require('path')
+var spawn = require('child_process').spawn
 var assert = require('assert')
 var Pool = require('../').Pool
 var Promise = GLOBAL.Promise || require('es6-promise').Promise
-var port = process.env.PORT || 4000
-var server, pool
 
 suite('jacuzzi', function () {
   set('iterations', 1000)
   set('concurrency', 100)
-  // set('type', 'static')
+  set('type', 'static')
+
+  var pool, server1
 
   before(function(done) {
-    server = net.createServer(port, function(socket) {
-      socket.setEncoding('utf8')
-      socket.on('data', function(data) {
-        assert.equal(data, 'ping')
-        socket.write('pong')
-      })
-    })
-    server.listen(port, done)
-  })
+    server1 = spawn('node', [path.join(__dirname, 'server.js'), 4001], { stdio: 'inherit' })
 
-  before(function() {
     pool = new Pool({
+      min: 0,
       max: 10,
+      acquisitionTimeout: 0,
+      leakDetectionThreshold: 0,
       create: function() {
         return new Promise(function(resolve) {
-          var socket = net.connect(port, function() {
+          var socket = net.connect(4001, function() {
             resolve(socket)
           })
           socket.setEncoding('utf8')
@@ -44,10 +40,12 @@ suite('jacuzzi', function () {
         })
       }
     })
+
+    setTimeout(done, 1000)
   })
 
   bench('naive approach (1 conn / request)', function(next) {
-    var socket = net.connect(port, function() {
+    var socket = net.connect(4001, function() {
       socket.write('ping')
     })
     socket.setEncoding('utf8')
@@ -59,7 +57,7 @@ suite('jacuzzi', function () {
 
   bench('jacuzzi connection pool', function(next) {
     pool.acquire(function(err, socket) {
-      // console.log(arguments)
+      if (err) throw err
       socket.on('data', function ondata(data) {
         socket.removeListener('data', ondata)
         assert.equal(data, 'pong')
@@ -70,8 +68,12 @@ suite('jacuzzi', function () {
     })
   })
 
-  after(function(done) {
-    server.close(done)
+  after(function() {
+    server1.kill()
     pool.drain()
+  })
+
+  process.on('exit', function() {
+    server1.kill()
   })
 })

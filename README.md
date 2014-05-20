@@ -31,7 +31,7 @@
   - **events** (default: close, end, error, timeout) - a list of events that are listened to on each resource and - if called - lead to the destruction of the resource
   - **creationTimeout** (default: 500ms) - a timeout (in ms) for the creation of a resource
   - **destructionTimeout** (default: 500ms) - a timeout (in ms) for the destruction of a resource
-  - **acquisitionTimeout** (default: 10000) -  a timeout (in ms) for the acquisition of a resource
+  - **acquisitionTimeout** (default: 10000) -  a timeout (in ms) for the acquisition of a resource (0 = disabled - improves performance)
   - **leakDetectionThreshold** (default: 30.000) - an amount (in ms) of time that a resource can be in use out of the pool before a error is thrown indicating a possible resource leak. (0 = disabled)
   - **faultTolerance** (default: true) - whether failures while creating resources should be ignored and the creation retried or the errors returned and creation aborted
 
@@ -49,7 +49,7 @@
 
 ### Example
 
-  Keep in mind that `jacuzzi` is generic, i.e., resources are not limited to sockets nor to connections!
+  Keep in mind that `jacuzzi` is generic, i.e., resources are neither limited to sockets nor to connections!
 
 ```js
   var net = require('net')
@@ -128,7 +128,7 @@
 
 ### Example
 
-  Keep in mind that `jacuzzi` is generic, i.e., resources are not limited to sockets nor to connections!
+  Keep in mind that `jacuzzi` is generic, i.e., resources are neither limited to sockets nor to connections!
 
 ```js
   var net = require('net'), a, b, c
