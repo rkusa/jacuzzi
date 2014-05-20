@@ -1,4 +1,5 @@
 /*eslint-env node, mocha */
+/*eslint handle-callback-err:0, max-nested-callbacks:[2, 4], no-unused-expressions:0 */
 
 'use strict'
 
@@ -63,7 +64,7 @@ suite('Pool', function() {
     test('promise', function(done) {
       var pool = new Pool({
         create: function() {
-          return new Promise(function(resolve, reject) {
+          return new Promise(function(resolve) {
             resolve(new Resource)
           })
         }
@@ -464,14 +465,10 @@ suite('Pool', function() {
       })
     })
 
-    test('check', function(done) {
-      var checked = 0
+    test('return', function(done) {
       var pool = new Pool({
         create: function() {
           return new Resource
-        },
-        check: function() {
-          return ++checked === 1
         },
         min: 1,
         max: 1
@@ -486,19 +483,12 @@ suite('Pool', function() {
           expect(pool.pool.length).to.equal(0)
           expect(pool.size).to.equal(1)
 
-          var spy = chai.spy()
-          pool.on('destroy', spy)
-
-          pool.opts.min = 0
           pool.release(resource)
 
-          setTimeout(function() {
-            expect(spy).to.have.been.called()
-            expect(pool.pool.length).to.equal(0)
-            expect(pool.size).to.equal(0)
+          expect(pool.pool.length).to.equal(1)
+          expect(pool.size).to.equal(1)
 
-            done()
-          })
+          done()
         })
       })
     })
@@ -507,3 +497,134 @@ suite('Pool', function() {
 
 })
 
+var Balancer = require('../lib/').Balancer
+
+suite('Balancer', function() {
+  var first, second, third
+
+  suiteSetup(function(done) {
+    var count = 3, cb = function() {
+      if (--count === 0) done()
+    }
+
+    function handler(socket) {
+      socket.setEncoding('utf8')
+      socket.on('data', function(data) {
+        expect(data).to.equal('ping')
+        socket.write('pong')
+      })
+    }
+
+    first = net.createServer(handler)
+    first.listen(4001, cb)
+
+    second = net.createServer(handler)
+    second.listen(4002, cb)
+
+    third = net.createServer(handler)
+    third.listen(4003, cb)
+  })
+
+  suiteTeardown(function() {
+    first.close()
+    second.close()
+    third.close()
+  })
+
+  var balancer, a, b, c
+  var opts = {
+    min: 0,
+    max: 2,
+    // acquisitionTimeout: 50,
+    create: function(port) {
+      return new Promise(function(resolve) {
+        var socket = net.connect(port, function() {
+          resolve(socket)
+        })
+        socket.setEncoding('utf8')
+        socket.setTimeout(300000)
+      })
+    },
+    destroy: function(socket) {
+      return new Promise(function(resolve) {
+        if (!socket.localPort) resolve()
+        else socket.end(resolve)
+      })
+    },
+    check: function(socket) {
+      return !!socket.localPort
+    }
+  }
+
+  test('instantiation', function() {
+    balancer = new Balancer
+
+    balancer.add(a = new Pool('4001', opts, 4001), 1)
+    balancer.add(b = new Pool('4002', opts, 4002), 2)
+    balancer.add(c = new Pool('4003', opts, 4003), 2)
+  })
+
+  test('balancing', function() {
+    expect(balancer.next()).to.equal(a)
+    expect(balancer.next()).to.equal(a)
+    expect(balancer.next()).to.equal(a)
+
+    a.healthy = false
+
+    expect(balancer.next()).to.equal(b)
+    expect(balancer.next()).to.equal(c)
+    expect(balancer.next()).to.equal(b)
+    expect(balancer.next()).to.equal(c)
+    expect(balancer.next()).to.equal(b)
+    expect(balancer.next()).to.equal(c)
+
+    a.healthy = true
+
+    expect(balancer.next()).to.equal(a)
+  })
+
+  test('acquire', function(done) {
+    balancer.acquire(function(err, resource) {
+      expect(err).to.not.exist
+      expect(resource).to.be.an.instanceOf(net.Socket)
+      balancer.release(resource)
+      done()
+    })
+  })
+
+  test('release', function(done) {
+    expect(a.size).to.equal(1)
+    expect(a.pool).to.have.lengthOf(1)
+    a.pool[0].end()
+    setTimeout(done, 500)
+  })
+
+  test('fail create -> mark pool as unhealthy', function(done) {
+    a.opts.create = function() {
+      return new Promise(function(resolve, reject) {
+        reject()
+      })
+    }
+    balancer.opts.check = function() {
+      return false
+    }
+
+    balancer.acquire(function(err, resource) {
+      expect(resource.remotePort).to.equal(4002)
+      expect(a.size).to.equal(0)
+      expect(a.pool).to.have.lengthOf(0)
+      expect(a.healthy).to.be.not.ok
+      done()
+    })
+  })
+
+  test('monitor unhealthy pool', function(done) {
+    balancer.opts.check = function() {
+      return true
+    }
+    setTimeout(function() {
+      expect(a.healthy).to.be.ok
+      done()
+    }, 100)
+  })
+})

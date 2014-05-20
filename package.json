@@ -1,6 +1,6 @@
 {
   "name": "jacuzzi",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "A generic resource pool and balancer.",
   "keywords": [
@@ -26,7 +26,7 @@
   },
   "main": "./lib",
   "scripts": {
-    "test": "gulp",
+    "test": "node --harmony `which gulp`",
     "benchmark": "matcha"
   },
   "dependencies": {
