@@ -58,7 +58,7 @@ suite('jacuzzi', function () {
   })
 
   bench('jacuzzi connection pool', function(next) {
-    pool.acquire(function(socket) {
+    pool.acquire(function(err, socket) {
       // console.log(arguments)
       socket.on('data', function ondata(data) {
         socket.removeListener('data', ondata)

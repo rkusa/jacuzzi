@@ -1,6 +1,7 @@
 # jacuzzi
 
   A generic resource pool and balancer.
+
   [![NPM](https://badge.fury.io/js/jacuzzi.svg)](https://npmjs.org/package/jacuzzi)
   [![Build Status](https://secure.travis-ci.org/rkusa/jacuzzi.svg)](http://travis-ci.org/rkusa/jacuzzi)
 
@@ -26,7 +27,9 @@
   - **events** (default: close, end, error, timeout) - a list of events that are listened to on each resource and - if called - lead to the destruction of the resource
   - **creationTimeout** (default: 500ms) - a timeout (in ms) for the creation of a resource
   - **destructionTimeout** (default: 500ms) - a timeout (in ms) for the destruction of a resource
+  - **acquisitionTimeout** (default: 10000) -  a timeout (in ms) for the acquisition of a resource
   - **leakDetectionThreshold** (default: 30.000) - an amount (in ms) of time that a resource can be in use out of the pool before a error is thrown indicating a possible resource leak. (0 = disabled)
+  - **faultTolerance** (default: true) - whether the pool just logs errors and retries creation on errors automatically
 
 ### pool.acquire([callback])
 
@@ -39,6 +42,11 @@
 ### pool.drain()
 
   Gracefully shut down the pool.
+
+## Balancer
+
+  First Come First Serve
+
 
 ## MIT License
 

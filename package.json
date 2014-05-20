@@ -27,7 +27,7 @@
   "main": "./lib",
   "scripts": {
     "test": "gulp",
-    "benchmark": "matcha test/benchmarks.js"
+    "benchmark": "matcha"
   },
   "dependencies": {
     "debug": "^0.8.1",
