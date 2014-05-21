@@ -27,7 +27,7 @@
   "main": "./lib",
   "scripts": {
     "test": "node --harmony `which gulp`",
-    "benchmark": "matcha test/benchmarks"
+    "benchmark": "matcha --harmony test/benchmarks"
   },
   "dependencies": {
     "debug": "^0.8.1",
