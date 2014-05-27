@@ -1,6 +1,6 @@
 {
   "name": "jacuzzi",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "A generic resource pool and balancer.",
   "keywords": [
