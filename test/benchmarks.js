@@ -45,7 +45,7 @@ suite('jacuzzi', function () {
       }
     }
 
-    balancer = new Balancer
+    balancer = new Balancer({ acquisitionTimeout: 0 })
     balancer.add(pool = new Pool('Server1', opts, 4001), 1)
     balancer.add(new Pool('Server2', opts, 4002), 1)
     balancer.add(new Pool('Server3', opts, 4003), 1)

@@ -7,6 +7,8 @@ A generic resource pool and balancer.
 
 Inspired by [@coopernurse](https://github.com/coopernurse)'s [node-pool](https://github.com/coopernurse/node-pool) but with an additional balancer layer and Promises (API supports both callbacks and Promises).
 
+**Caution:** This project is in early stages. It'll be battle tested in next couple of weeks. If you run into misbehavior, try setting `DEBUG=jacuzzi:*`. Feedback of any kind is welcome.
+
 ## Pool
 
 A Generic Resource Pool.
@@ -95,7 +97,7 @@ Instantiates a new Balancer.
 
 ### balancer.add(pool, priority)
 
-This method is used to add a pool to the balancer. The `priority` argument affects the scheduling. The lowest number for `priority` indicates the highest priority. Pools with lower priority are only selected, if the higher ones are down. Multiple pools with the same priority a scheduled First with Come First Serve.
+This method is used to add a pool to the balancer. The `priority` argument affects the scheduling. The lowest number for `priority` indicates the highest priority. Pools with lower priority are only selected, if the higher ones are down. Multiple pools with the same priority a scheduled with first come first serve.
 
 **Example:**
 
