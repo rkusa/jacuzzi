@@ -77,7 +77,7 @@ suite('jacuzzi', function () {
     })
   })
 
-  bench('jacuzzi balancer (2 servers)', function(next) {
+  bench('jacuzzi balancer (3 servers)', function(next) {
     balancer.acquire(function(err, socket) {
       if (err) throw err
       socket.on('data', function ondata(data) {

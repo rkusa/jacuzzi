@@ -627,4 +627,19 @@ suite('Balancer', function() {
       done()
     }, 100)
   })
+
+  test('all down', function(done) {
+    a.healthy = b.healthy = c.healthy = false
+    balancer.opts.check = function() {
+      return false
+    }
+
+    balancer.acquire(function(err, resource) {
+      expect(err).to.exist
+      expect(err).to.be.an.instanceof(Balancer.UnavailableError)
+      expect(err.message).to.equal('All servers are down')
+      expect(resource).to.not.exist
+      done()
+    })
+  })
 })
