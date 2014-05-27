@@ -1,15 +1,8 @@
-/*eslint no-process-exit:0 */
-
 'use strict'
 
 var gulp = require('gulp')
 
-gulp.task('default', ['lint', 'test'], function() {
-  // workaround ...
-  process.nextTick(function () {
-    process.exit(0)
-  })
-})
+gulp.task('default', ['lint', 'test'])
 
 var mocha = require('gulp-mocha')
 gulp.task('test', function() {

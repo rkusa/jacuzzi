@@ -265,6 +265,7 @@ suite('Pool', function() {
     test('passing check', function(done) {
       var checked = 0
       var pool = new Pool({
+        leakDetectionThreshold: 0,
         create: function() {
           return new Resource
         },
@@ -293,6 +294,7 @@ suite('Pool', function() {
             expect(pool.size).to.equal(2)
             expect(checked).to.equal(2)
 
+            // pool.drain()
             done()
           })
         })
@@ -304,6 +306,7 @@ suite('Pool', function() {
     test('failing check', function(done) {
       var checked = 0
       var pool = new Pool({
+        leakDetectionThreshold: 0,
         create: function() {
           return new Resource
         },
@@ -330,6 +333,7 @@ suite('Pool', function() {
 
     test('create if #resources < opts.max', function(done) {
       var pool = new Pool({
+        leakDetectionThreshold: 0,
         create: function() {
           return new Resource
         },
@@ -355,6 +359,8 @@ suite('Pool', function() {
         create: function() {
           return new Resource
         },
+        leakDetectionThreshold: 0,
+        acquisitionTimeout: 0,
         min: 1,
         max: 1
       })
@@ -384,6 +390,7 @@ suite('Pool', function() {
           })
         },
         min: 0,
+        leakDetectionThreshold: 0,
         acquisitionTimeout: 500
       })
 
@@ -395,6 +402,8 @@ suite('Pool', function() {
         pool.acquire(function(err, resource) {
           expect(err).to.be.an.instanceOf(TimeoutError)
           expect(resource).to.not.exist
+
+          pool.drain()
           done()
         })
       })
@@ -440,7 +449,8 @@ suite('Pool', function() {
           return new Resource
         },
         min: 1,
-        max: 1
+        max: 1,
+        leakDetectionThreshold: 0
       })
 
       setTimeout(function() {
@@ -501,6 +511,7 @@ var Balancer = require('../lib/').Balancer
 
 suite('Balancer', function() {
   var first, second, third
+  var balancer, a, b, c
 
   suiteSetup(function(done) {
     var count = 3, cb = function() {
@@ -526,16 +537,16 @@ suite('Balancer', function() {
   })
 
   suiteTeardown(function() {
+    balancer.shutdown()
     first.close()
     second.close()
     third.close()
   })
 
-  var balancer, a, b, c
   var opts = {
     min: 0,
     max: 2,
-    // acquisitionTimeout: 50,
+    leakDetectionThreshold: 0,
     create: function(port) {
       return new Promise(function(resolve) {
         var socket = net.connect(port, function() {
@@ -614,6 +625,8 @@ suite('Balancer', function() {
       expect(a.size).to.equal(0)
       expect(a.pool).to.have.lengthOf(0)
       expect(a.healthy).to.be.not.ok
+
+      balancer.release(resource)
       done()
     })
   })
