@@ -641,6 +641,33 @@ suite('Balancer', function() {
     }, 100)
   })
 
+  test('acquire timeout', function(done) {
+    var b = new Balancer({
+      acquisitionTimeout: 500
+    })
+    b.add(new Pool('4001', {
+      create: function() {
+        return new Promise(function() {
+
+        })
+      }
+    }, 4001), 1)
+
+    b.acquire()
+    .catch(function(err) {
+      expect(err).to.be.an.instanceOf(TimeoutError)
+
+      // with callback
+      b.acquire(function(err, resource) {
+        expect(err).to.be.an.instanceOf(TimeoutError)
+        expect(resource).to.not.exist
+
+        b.shutdown()
+        done()
+      })
+    })
+  })
+
   test('all down', function(done) {
     a.healthy = b.healthy = c.healthy = false
     balancer.opts.check = function() {

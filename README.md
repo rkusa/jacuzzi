@@ -29,7 +29,7 @@
   - **destroy**(resource, callback) (optional) - a function that is used to destroy resources (could return a `Promise` or use the `callback` argument for asynchronous destruction)
   - **check**(resource, [callback]) (optional) - a function that is used to check a resource (should return a `true` if the resource is OK, or otherwise `false`; for asynchronous checks it could also return a `Promise` or use the `callback` argument)
   - **events** (default: close, end, error, timeout) - a list of events that are listened to on each resource and - if called - lead to the destruction of the resource
-  - **creationTimeout** (default: 500ms) - a timeout (in ms) for the creation of a resource
+  - **creationTimeout** (default: 2000ms) - a timeout (in ms) for the creation of a resource
   - **destructionTimeout** (default: 500ms) - a timeout (in ms) for the destruction of a resource
   - **acquisitionTimeout** (default: 10000) -  a timeout (in ms) for the acquisition of a resource (0 = disabled - improves performance)
   - **leakDetectionThreshold** (default: 30.000) - an amount (in ms) of time that a resource can be in use out of the pool before a error is thrown indicating a possible resource leak. (0 = disabled)
@@ -92,6 +92,7 @@
   **Options:**
 
   - **check**(resource, [callback]) (optional) - a function that is used to check a pool (should return a `true` if the pool is OK, or otherwise `false`; for asynchronous checks it could also return a `Promise` or use the `callback` argument)
+  - **acquisitionTimeout** (default: 10000) -  a timeout (in ms) for the acquisition of a resource (0 = disabled - improves performance)
 
 ### balancer.add(pool, priority)
 
