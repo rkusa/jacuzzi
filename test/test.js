@@ -642,4 +642,14 @@ suite('Balancer', function() {
       done()
     })
   })
+
+  test('acquire with no pool', function(done) {
+    var b = new Balancer
+    b.acquire(function(err, resource) {
+      expect(err).to.exist
+      expect(err.message).to.equal('Balancer is empty - add pools first: `balancer.add(new Pool(...))`')
+      expect(resource).to.not.exist
+      done()
+    })
+  })
 })
