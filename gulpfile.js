@@ -20,11 +20,3 @@ gulp.task('lint', function() {
              .pipe(eslint.format())
              .pipe(eslint.failOnError())
 })
-
-// var cat = require('gulp-cat')
-// var dogs = require('dogs')
-// gulp.task('dogs', function() {
-//   return gulp.src(['lib/*'])
-//   .pipe(dogs())
-//   .pipe(cat())
-// })

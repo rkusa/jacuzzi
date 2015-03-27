@@ -128,6 +128,10 @@ This method is used to acquire / request a resource from the balancer. It return
 
 This method is used to release / return a `resource` back to its pool.
 
+### balancer.shutdown()
+
+Drain all pools.
+
 ### Example
 
 Keep in mind that `jacuzzi` is generic, i.e., resources are neither limited to sockets nor to connections!
@@ -174,7 +178,7 @@ Debug message can be turned on with the env `DEBUG=jacuzzi:*`.
 
 ## MIT License
 
-Copyright (c) 2014 Markus Ast
+Copyright (c) 2014-2015 Markus Ast
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
